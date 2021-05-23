@@ -2,7 +2,6 @@ package com.AddressBook_RestAPI;
 
 import static org.junit.Assert.*;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.junit.AfterClass;
@@ -11,8 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.AddressBook_RestAPI.AddressBookPayrollService.IOService;
-import com.EmployeePayroll_RESTAPI.EmployeePayrollData;
-import com.EmployeePayroll_RESTAPI.EmployeePayrollService;
 import com.google.gson.Gson;
 
 import io.restassured.RestAssured;
@@ -47,13 +44,13 @@ public class AddressBookRestAPITest {
 		return arrayOfPerson;
 	}
 	
-	private Response addContactToJsonServer(AddressBookData addressBookData) {
-		String employeeJson = new Gson().toJson(addressBookData);
+	/*private Response addContactToJsonServer(AddressBookData addressBookData) {
+		String addJson = new Gson().toJson(addressBookData);
 		RequestSpecification request = RestAssured.given();
 		request.header("Content-Type", "application/json");
-		request.body(employeeJson);
+		request.body(addJson);
 		return request.post("/addressbook");
-	}
+	}*/
 
 	@Test
 	public void givenAddressbookDataInJsonServer_WhenRetrieved_ShouldMatchCount() {
@@ -63,7 +60,7 @@ public class AddressBookRestAPITest {
 		assertEquals(4, entries);
 	}
 
-	@Test
+	/*@Test
 	public void givenMultipleContact_WhenAdded_ShouldMatch201ResponseAndCount() {
 		AddressBookData[] arrayOfPerson = getAddressbookList();
 		addressbookPayrollService = new AddressBookPayrollService(Arrays.asList(arrayOfPerson));
@@ -82,5 +79,21 @@ public class AddressBookRestAPITest {
 		}
 		long entries = addressbookPayrollService.countEntries(REST_IO);
 		assertEquals(4, entries);
+	}*/
+	
+	@Test
+	public void givenCity_WhenUpdated_ShouldMatch200response() {
+		AddressBookData[] arrayOfPerson = getAddressbookList();
+		addressbookPayrollService = new AddressBookPayrollService(Arrays.asList(arrayOfPerson));
+		addressbookPayrollService.updateContactCity("Akash", "Munger", REST_IO);
+		AddressBookData addressBookData = addressbookPayrollService.getAddressBookData("Akash");
+
+		String addJson = new Gson().toJson(addressBookData);
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		request.body(addJson);
+		Response response = request.put("/addressbook/" + addressBookData.id);
+		int statusCode = response.getStatusCode();
+		assertEquals(200, statusCode);
 	}
 }
