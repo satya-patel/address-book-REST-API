@@ -38,4 +38,9 @@ public class AddressBookPayrollService {
 				.findFirst().orElse(null);
 		return addressBookData;
 	}
+	
+	public void deleteContactPayroll(String firstName, IOService ioService) {
+		AddressBookData addressBookData = this.getAddressBookData(firstName);
+		addressbookList.remove(addressBookData);
+	}
 }

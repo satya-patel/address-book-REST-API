@@ -44,13 +44,13 @@ public class AddressBookRestAPITest {
 		return arrayOfPerson;
 	}
 	
-	/*private Response addContactToJsonServer(AddressBookData addressBookData) {
+	private Response addContactToJsonServer(AddressBookData addressBookData) {
 		String addJson = new Gson().toJson(addressBookData);
 		RequestSpecification request = RestAssured.given();
 		request.header("Content-Type", "application/json");
 		request.body(addJson);
 		return request.post("/addressbook");
-	}*/
+	}
 
 	@Test
 	public void givenAddressbookDataInJsonServer_WhenRetrieved_ShouldMatchCount() {
@@ -79,7 +79,7 @@ public class AddressBookRestAPITest {
 		}
 		long entries = addressbookPayrollService.countEntries(REST_IO);
 		assertEquals(4, entries);
-	}*/
+	}
 	
 	@Test
 	public void givenCity_WhenUpdated_ShouldMatch200response() {
@@ -95,5 +95,21 @@ public class AddressBookRestAPITest {
 		Response response = request.put("/addressbook/" + addressBookData.id);
 		int statusCode = response.getStatusCode();
 		assertEquals(200, statusCode);
+	}*/
+	
+	@Test
+	public void givenContactDetails_WhenDeleted_ShouldMatch200ResponseAndCount() {
+		AddressBookData[] arrayOfPerson = getAddressbookList();
+		addressbookPayrollService = new AddressBookPayrollService(Arrays.asList(arrayOfPerson));
+		AddressBookData addressBookData = addressbookPayrollService.getAddressBookData("Raman");
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		Response response = request.delete("/addressbook/" + addressBookData.id);
+		int statusCode = response.getStatusCode();
+		assertEquals(200, statusCode);
+
+		addressbookPayrollService.deleteContactPayroll(addressBookData.firstName, REST_IO);
+		long entries = addressbookPayrollService.countEntries(REST_IO);
+		assertEquals(3, entries);
 	}
 }
